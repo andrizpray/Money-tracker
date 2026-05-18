@@ -2,102 +2,168 @@
 @section('title', 'Dashboard - Money Tracker')
 
 @section('content')
-<div class="space-y-6">
+<div class="space-y-6 animate-fade-in">
+
     <!-- Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Balance -->
-        <div class="card rounded-2xl p-5 glow">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-text2 text-sm">Saldo Bulan Ini</span>
-                <div class="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center text-xl">💵</div>
+
+        <!-- Balance Card -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:-translate-y-0.5">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-primary-500/10 to-transparent rounded-full -mr-20 -mt-20 group-hover:from-primary-500/20 transition-colors duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-primary-500/10 ring-1 ring-primary-500/20">
+                        <svg class="w-5 h-5 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <span class="text-sm font-medium text-text-secondary">Saldo Bulan Ini</span>
+                </div>
+                <p class="text-3xl font-bold text-text-primary tracking-tight">Rp{{ number_format($month['balance'], 0, ',', '.') }}</p>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="px-2 py-0.5 rounded-full text-xs bg-primary-500/10 text-primary-400 font-medium">{{ $month['count'] }} transaksi</span>
+                </div>
             </div>
-            <p class="text-2xl font-bold text-text">Rp{{ number_format($month['balance'], 0, ',', '.') }}</p>
-            <p class="text-xs text-text2 mt-1">{{ $month['count'] }} transaksi</p>
         </div>
 
-        <!-- Income -->
-        <div class="card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-text2 text-sm">Pemasukan</span>
-                <div class="w-10 h-10 rounded-xl bg-success/20 flex items-center justify-center text-xl">📈</div>
+        <!-- Income Card -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:-translate-y-0.5">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-success/10 to-transparent rounded-full -mr-20 -mt-20 group-hover:from-success/20 transition-colors duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-success/10 ring-1 ring-success/20">
+                        <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+                    </div>
+                    <span class="text-sm font-medium text-text-secondary">Pemasukan</span>
+                </div>
+                <p class="text-3xl font-bold text-success tracking-tight">Rp{{ number_format($month['income'], 0, ',', '.') }}</p>
+                <div class="mt-2">
+                    <span class="text-xs text-text-tertiary">Bulan {{ now()->format('F') }}</span>
+                </div>
             </div>
-            <p class="text-2xl font-bold text-success">Rp{{ number_format($month['income'], 0, ',', '.') }}</p>
-            <p class="text-xs text-text2 mt-1">Bulan ini</p>
         </div>
 
-        <!-- Expense -->
-        <div class="card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-text2 text-sm">Pengeluaran</span>
-                <div class="w-10 h-10 rounded-xl bg-danger/20 flex items-center justify-center text-xl">📉</div>
+        <!-- Expense Card -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:-translate-y-0.5">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-danger/10 to-transparent rounded-full -mr-20 -mt-20 group-hover:from-danger/20 transition-colors duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-danger/10 ring-1 ring-danger/20">
+                        <svg class="w-5 h-5 text-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+                    </div>
+                    <span class="text-sm font-medium text-text-secondary">Pengeluaran</span>
+                </div>
+                <p class="text-3xl font-bold text-danger tracking-tight">Rp{{ number_format($month['expense'], 0, ',', '.') }}</p>
+                <div class="mt-2">
+                    <span class="text-xs text-text-tertiary">Bulan {{ now()->format('F') }}</span>
+                </div>
             </div>
-            <p class="text-2xl font-bold text-danger">Rp{{ number_format($month['expense'], 0, ',', '.') }}</p>
-            <p class="text-xs text-text2 mt-1">Bulan ini</p>
         </div>
 
-        <!-- Today -->
-        <div class="card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-3">
-                <span class="text-text2 text-sm">Hari Ini</span>
-                <div class="w-10 h-10 rounded-xl bg-warning/20 flex items-center justify-center text-xl">📅</div>
+        <!-- Today Card -->
+        <div class="relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card hover:shadow-card-hover transition-all duration-300 group hover:-translate-y-0.5">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-warning/10 to-transparent rounded-full -mr-20 -mt-20 group-hover:from-warning/20 transition-colors duration-500"></div>
+            <div class="relative">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2.5 rounded-xl bg-warning/10 ring-1 ring-warning/20">
+                        <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
+                    <span class="text-sm font-medium text-text-secondary">Hari Ini</span>
+                </div>
+                <p class="text-3xl font-bold {{ $today['balance'] >= 0 ? 'text-success' : 'text-danger' }} tracking-tight">
+                    Rp{{ number_format($today['balance'], 0, ',', '.') }}
+                </p>
+                <div class="mt-2">
+                    <span class="text-xs text-text-tertiary">{{ $today['count'] }} transaksi</span>
+                </div>
             </div>
-            <p class="text-2xl font-bold {{ $today['balance'] >= 0 ? 'text-success' : 'text-danger' }}">
-                Rp{{ number_format($today['balance'], 0, ',', '.') }}
-            </p>
-            <p class="text-xs text-text2 mt-1">{{ $today['count'] }} transaksi hari ini</p>
         </div>
     </div>
 
     <!-- Charts Row -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
         <!-- Weekly Chart -->
-        <div class="lg:col-span-2 card rounded-2xl p-6">
-            <h3 class="text-lg font-semibold mb-4">📊 Tren 7 Hari Terakhir</h3>
+        <div class="lg:col-span-2 relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-text-primary">📊 Tren 7 Hari Terakhir</h3>
+                    <p class="text-xs text-text-tertiary mt-1">Perbandingan pemasukan dan pengeluaran</p>
+                </div>
+                <div class="flex items-center gap-4 text-xs">
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-success"></div>
+                        <span class="text-text-secondary">Pemasukan</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-danger"></div>
+                        <span class="text-text-secondary">Pengeluaran</span>
+                    </div>
+                </div>
+            </div>
             <canvas id="weeklyChart" height="120"></canvas>
         </div>
 
         <!-- Category Pie -->
-        <div class="card rounded-2xl p-6">
-            <h3 class="text-lg font-semibold mb-4">🍩 Kategori Pengeluaran</h3>
-            <canvas id="categoryChart" height="200"></canvas>
+        <div class="relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-text-primary">🍩 Kategori</h3>
+                    <p class="text-xs text-text-tertiary mt-1">Distribusi pengeluaran</p>
+                </div>
+            </div>
+            <canvas id="categoryChart" height="160"></canvas>
             <div class="mt-4 space-y-2">
-                @foreach($categoryBreakdown->take(5) as $cat)
+                @forelse($categoryBreakdown->take(4) as $cat)
                 <div class="flex items-center justify-between text-sm">
                     <div class="flex items-center gap-2">
-                        <span>{{ $cat['icon'] }}</span>
-                        <span class="text-text2">{{ $cat['name'] }}</span>
+                        <div class="w-2.5 h-2.5 rounded-full" style="background-color: {{ $cat['color'] }}"></div>
+                        <span class="text-text-secondary">{{ $cat['icon'] }} {{ $cat['name'] }}</span>
                     </div>
-                    <span class="text-text font-medium">Rp{{ number_format($cat['total'], 0, ',', '.') }}</span>
+                    <span class="text-text-primary font-medium">Rp{{ number_format($cat['total'], 0, ',', '.') }}</span>
                 </div>
-                @endforeach
+                @empty
+                <p class="text-sm text-text-muted text-center py-4">Belum ada data kategori</p>
+                @endforelse
             </div>
         </div>
     </div>
 
     <!-- Recent Transactions -->
-    <div class="card rounded-2xl p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold">📋 Transaksi Terakhir</h3>
-            <a href="{{ route('transactions.index') }}" class="text-accent text-sm hover:underline">Lihat semua →</a>
+    <div class="relative overflow-hidden rounded-2xl bg-surface border border-surface3/50 p-6 shadow-card">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="text-lg font-semibold text-text-primary">📋 Transaksi Terakhir</h3>
+                <p class="text-xs text-text-tertiary mt-1">Aktivitas terbaru kamu</p>
+            </div>
+            <a href="{{ route('transactions.index') }}" class="text-sm text-primary-400 hover:text-primary-300 font-medium transition-colors">Lihat semua →</a>
         </div>
 
         @if($recentTransactions->isEmpty())
-            <div class="text-center py-12 text-text2">
-                <p class="text-4xl mb-3">📭</p>
-                <p>Belum ada transaksi</p>
-                <a href="{{ route('transactions.create') }}" class="btn-primary inline-block mt-4 px-6 py-2 rounded-lg text-white text-sm font-medium">+ Tambah Transaksi</a>
+            <div class="text-center py-12">
+                <div class="w-16 h-16 rounded-2xl bg-surface2 mx-auto mb-4 flex items-center justify-center text-3xl">📭</div>
+                <p class="text-text-secondary mb-4">Belum ada transaksi</p>
+                <a href="{{ route('transactions.create') }}" class="btn-primary inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Tambah Transaksi
+                </a>
             </div>
         @else
-            <div class="space-y-3">
+            <div class="space-y-2">
                 @foreach($recentTransactions as $t)
-                <div class="flex items-center justify-between p-3 rounded-xl bg-surface2/50 hover:bg-surface2 transition-colors">
+                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-surface2/50 transition-colors duration-150 group">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl {{ $t->type === 'income' ? 'bg-success/20' : 'bg-danger/20' }} flex items-center justify-center text-lg">
+                        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-105
+                            {{ $t->type === 'income' ? 'bg-success/10 ring-1 ring-success/20' : 'bg-danger/10 ring-1 ring-danger/20' }}">
                             {{ $t->category?->icon ?? '📦' }}
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-text">{{ $t->description }}</p>
-                            <p class="text-xs text-text2">{{ $t->category?->name ?? '-' }} • {{ $t->transaction_date->format('d M Y') }}</p>
+                            <p class="text-sm font-medium text-text-primary">{{ $t->description }}</p>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs
+                                    {{ $t->type === 'income' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }} font-medium">
+                                    {{ $t->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
+                                </span>
+                                <span class="text-xs text-text-muted">{{ $t->category?->name ?? '-' }} • {{ $t->transaction_date->format('d M Y') }}</span>
+                            </div>
                         </div>
                     </div>
                     <span class="font-semibold {{ $t->type === 'income' ? 'text-success' : 'text-danger' }}">
@@ -109,18 +175,17 @@
         @endif
     </div>
 
-    <!-- Quick Add -->
-    <div class="fixed bottom-6 right-6">
-        <a href="{{ route('transactions.create') }}" class="w-14 h-14 rounded-full btn-primary flex items-center justify-center text-white text-2xl shadow-lg shadow-accent/30 hover:scale-110 transition-transform">
-            +
-        </a>
-    </div>
 </div>
 @endsection
 
 @push('scripts')
 <script>
-    // Weekly Chart
+    // Chart.js Global Defaults
+    Chart.defaults.color = '#94a3b8';
+    Chart.defaults.borderColor = 'rgba(42, 52, 65, 0.5)';
+    Chart.defaults.font.family = 'Inter';
+
+    // Weekly Bar Chart
     const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
     new Chart(weeklyCtx, {
         type: 'bar',
@@ -130,62 +195,98 @@
                 {
                     label: 'Pemasukan',
                     data: @json(collect($chartData)->pluck('income')),
-                    backgroundColor: 'rgba(34, 197, 94, 0.6)',
-                    borderColor: '#22c55e',
-                    borderWidth: 1,
-                    borderRadius: 6,
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                    hoverBackgroundColor: 'rgba(16, 185, 129, 1)',
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    barThickness: 24,
                 },
                 {
                     label: 'Pengeluaran',
                     data: @json(collect($chartData)->pluck('expense')),
-                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
-                    borderColor: '#ef4444',
-                    borderWidth: 1,
-                    borderRadius: 6,
+                    backgroundColor: 'rgba(244, 63, 94, 0.8)',
+                    hoverBackgroundColor: 'rgba(244, 63, 94, 1)',
+                    borderRadius: 8,
+                    borderSkipped: false,
+                    barThickness: 24,
                 }
             ]
         },
         options: {
             responsive: true,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
-                legend: {
-                    labels: { color: '#94a3b8' }
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1E2532',
+                    titleColor: '#f8fafc',
+                    bodyColor: '#94a3b8',
+                    borderColor: 'rgba(42, 52, 65, 0.5)',
+                    borderWidth: 1,
+                    cornerRadius: 12,
+                    padding: 12,
+                    callbacks: {
+                        label: (context) => {
+                            return context.dataset.label + ': Rp ' + context.parsed.y.toLocaleString('id-ID');
+                        }
+                    }
                 }
             },
             scales: {
                 x: {
-                    ticks: { color: '#94a3b8' },
-                    grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                    grid: { display: false },
+                    ticks: { color: '#64748b' }
                 },
                 y: {
+                    grid: { color: 'rgba(42, 52, 65, 0.3)', drawBorder: false },
                     ticks: {
-                        color: '#94a3b8',
-                        callback: v => 'Rp' + v.toLocaleString('id-ID')
-                    },
-                    grid: { color: 'rgba(148, 163, 184, 0.1)' }
+                        color: '#64748b',
+                        callback: (value) => {
+                            if (value >= 1000000) return 'Rp ' + (value/1000000).toFixed(1) + 'M';
+                            if (value >= 1000) return 'Rp ' + (value/1000).toFixed(0) + 'k';
+                            return 'Rp ' + value;
+                        }
+                    }
                 }
             }
         }
     });
 
-    // Category Pie Chart
+    // Category Doughnut Chart
     const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = @json($categoryBreakdown);
     new Chart(categoryCtx, {
         type: 'doughnut',
         data: {
-            labels: @json($categoryBreakdown->pluck('name')),
+            labels: categoryData.map(c => c.name),
             datasets: [{
-                data: @json($categoryBreakdown->pluck('total')),
-                backgroundColor: @json($categoryBreakdown->pluck('color')),
+                data: categoryData.map(c => c.total),
+                backgroundColor: categoryData.map(c => c.color),
                 borderWidth: 0,
                 hoverOffset: 8,
             }]
         },
         options: {
             responsive: true,
-            cutout: '65%',
+            cutout: '72%',
             plugins: {
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#1E2532',
+                    titleColor: '#f8fafc',
+                    bodyColor: '#94a3b8',
+                    borderColor: 'rgba(42, 52, 65, 0.5)',
+                    borderWidth: 1,
+                    cornerRadius: 12,
+                    padding: 12,
+                    callbacks: {
+                        label: (context) => {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const pct = ((context.parsed / total) * 100).toFixed(1);
+                            return context.label + ': Rp ' + context.parsed.toLocaleString('id-ID') + ' (' + pct + '%)';
+                        }
+                    }
+                }
             }
         }
     });
