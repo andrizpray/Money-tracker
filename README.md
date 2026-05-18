@@ -1,134 +1,191 @@
-# 💰 Money Tracker — Laravel 13 + Telegram Bot
+# 💰 Money Tracker – Aplikasi Pencatat Keuangan Pribadi
 
-Aplikasi money tracking pribadi dengan integrasi Telegram Bot dan dashboard web.
+Aplikasi web pencatat pemasukan & pengeluaran pribadi berbasis **Laravel 13**, terintegrasi dengan **Telegram Bot** untuk input cepat, dan dilengkapi **dashboard visualisasi** (grafik harian, mingguan, bulanan) serta laporan ekspor PDF/CSV.
 
-## ✨ Fitur
+> ✅ **Live**: [https://money.eatrade-journal.site](https://money.eatrade-journal.site)  
+> 🤖 **Bot**: [@DrzMT_bot](https://t.me/DrzMT_bot)  
+> 🌐 **Domain**: `money.eatrade-journal.site` (SSL via Let's Encrypt + Cloudflare DNS)
 
-- **Telegram Bot**: Catat transaksi via chat (natural language)
-- **Dashboard Web**: Visualisasi grafik harian, mingguan, bulanan
-- **CRUD Transaksi**: Tambah, edit, hapus transaksi
-- **Kategori**: Kelola kategori pemasukan & pengeluaran
-- **Laporan**: Export PDF & CSV
-- **Dark Theme**: UI modern dengan indigo accent
-- **Responsive**: Mobile-friendly
+---
 
-## 🚀 Quick Start
+## 📋 Fitur Utama
 
-### 1. Clone & Install
-
-```bash
-git clone <repo-url> money-tracker
-cd money-tracker
-composer install
-npm install
+### Telegram Bot – Input Cepat
+Kirim pesan bebas ke bot, tidak perlu perintah rumit:
 ```
+Lapor pengeluaran 23000 beli makan
+Masuk 500000 gaji januari
+Keluar 15000 kopi
+```
+Bot otomatis parse dan catat transaksi.
 
-### 2. Setup Environment
+**Command yang tersedia:**
+- `/start` – Registrasi & welcome
+- `/lapor` – Input transaksi interaktif (guided)
+- `/riwayat` – 10 transaksi terakhir
+- `/laporan` – Ringkasan hari ini
+- `/bulanini` – Laporan bulan berjalan
+- `/kategori` – Kelola kategori
+- `/help` – Bantuan
+
+### Dashboard Web
+- **Ringkasan cepat** – Saldo, pemasukan & pengeluaran hari ini
+- **Grafik mingguan** – Tren 7 hari terakhir (bar chart)
+- **Pie chart kategori** – Distribusi pengeluaran per kategori
+- **Laporan lengkap** – Filter harian/mingguan/bulanan
+- **Ekspor** – PDF & CSV
+
+### Tech Stack
+| Komponen | Teknologi |
+|----------|-----------|
+| Framework | Laravel 13 |
+| Database | SQLite (`database/database.sqlite`) |
+| Frontend | Blade + Tailwind CSS + Alpine.js |
+| Charting | Chart.js (CDN) |
+| Telegram | `irazasyed/telegram-bot-sdk` |
+| PDF Export | `barryvdh/laravel-dompdf` |
+| Web Server | Nginx + PHP-FPM 8.3 |
+
+---
+
+## 🚀 Setup Development
 
 ```bash
+# Clone & masuk
+git clone https://github.com/andrizpray/Money-tracker.git
+cd Money-tracker
+
+# Install PHP deps
+composer install
+
+# Install JS deps
+npm install
+
+# Setup env
 cp .env.example .env
 php artisan key:generate
-```
 
-Edit `.env`:
-```env
-APP_URL=http://localhost:8000
-DB_DATABASE=/path/to/database.sqlite
-TELEGRAM_BOT_TOKEN=your_bot_token_here
-```
+# Edit .env – isi TELEGRAM_BOT_TOKEN & TELEGRAM_WEBHOOK_URL
+nano .env
 
-### 3. Database
+# Migrasi & seeder
+php artisan migrate:fresh --seed
 
-```bash
-touch database/database.sqlite
-php artisan migrate --seed
-```
-
-### 4. Run
-
-```bash
+# Jalankan
 php artisan serve
 npm run dev
 ```
 
-### 5. Setup Telegram Bot
+**Login default:** `user@money.id` / `password`
 
-1. Buat bot di @BotFather → dapatkan token
-2. Set token di `.env` → `TELEGRAM_BOT_TOKEN`
-3. Set webhook:
+### Telegram Webhook (Dev)
+Gunakan **ngrok** untuk expose webhook:
 ```bash
-php artisan telegram:webhook --set
-```
-Atau via dashboard: **Pengaturan** → masukkan bot token → klik "Set Webhook"
-
-## 📱 Telegram Bot Commands
-
-| Command | Deskripsi |
-|---------|-----------|
-| `/start` | Mulai & registrasi |
-| `/lapor` | Catat transaksi |
-| `/riwayat` | 10 transaksi terakhir |
-| `/laporan` | Laporan hari ini |
-| `/bulanini` | Laporan bulan ini |
-| `/kategori` | Daftar kategori |
-| `/help` | Bantuan |
-
-### Natural Language
-Langsung ketik tanpa command:
-```
-keluar 23000 beli makan
-masuk 500000 gaji
-pengeluaran 15000 kopi
+ngrok http 8000
+# Copy HTTPS URL → setWebhook via BotFather
 ```
 
-## 📊 Screenshots
+---
 
-### Dashboard
-- Summary cards (saldo, pemasukan, pengeluaran)
-- Grafik tren 7 hari
-- Pie chart kategori
-- Transaksi terakhir
+## 🌐 Setup Production (Ubuntu + Nginx)
 
-### Laporan
-- Filter harian/mingguan/bulanan
-- Grafik batang
-- Export PDF & CSV
+```bash
+# 1. Clone ke /var/www
+sudo git clone https://github.com/andrizpray/Money-tracker.git /var/www/money-tracker
+sudo chown -R $USER:$USER /var/www/money-tracker
 
-## 🛠️ Tech Stack
+# 2. Install deps
+cd /var/www/money-tracker
+composer install --no-dev --optimize-autoloader
+npm ci && npm run build
 
-- **Backend**: Laravel 11
-- **Database**: SQLite (default) / MySQL
-- **Frontend**: Blade + Tailwind CSS + Alpine.js + Chart.js
-- **Telegram**: irazasyed/telegram-bot-sdk
-- **PDF**: barryvdh/laravel-dompdf
+# 3. Setup env & migrasi
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --force
 
-## 📁 Struktur Folder
+# 4. Izin folder
+sudo chown -R www-data:www-data storage bootstrap/cache
+
+# 5. Nginx config – see section below
+
+# 6. Set webhook
+curl -F "url=https://money.eatrade-journal.site/api/telegram/webhook" \
+     https://api.telegram.org/bot<TOKEN>/setWebhook
+```
+
+### Nginx Config
+```nginx
+server {
+    listen 80;
+    server_name money.eatrade-journal.site;
+    location /.well-known/acme-challenge/ { root /var/www/certbot; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl http2;
+    server_name money.eatrade-journal.site;
+
+    ssl_certificate /etc/letsencrypt/live/money.eatrade-journal.site/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/money.eatrade-journal.site/privkey.pem;
+
+    root /var/www/money-tracker/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    }
+
+    location ~ /\. { deny all; }
+}
+```
+
+---
+
+## 🔐 Environment Variables
+
+| Variabel | Keterangan |
+|----------|------------|
+| `APP_KEY` | `php artisan key:generate` |
+| `TELEGRAM_BOT_TOKEN` | Dari @BotFather |
+| `TELEGRAM_WEBHOOK_URL` | `https://domain.com/api/telegram/webhook` |
+| `TELEGRAM_BOT_USERNAME` | Username bot (tanpa @) |
+| `APP_URL` | URL aplikasi (mis. `https://money.eatrade-journal.site`) |
+
+---
+
+## 📁 Struktur Utama
 
 ```
 app/
-├── Http/Controllers/    # Web & API controllers
-├── Models/              # Eloquent models
-├── Services/            # Business logic
-├── Telegram/            # Bot commands & conversations
-├── Policies/            # Authorization
-database/
-├── migrations/          # DB schema
-├── seeders/             # Default data
-resources/
-├── views/               # Blade templates
+├── Http/Controllers/
+│   ├── TelegramBotController.php   ← Logika bot + natural language parsing
+│   ├── ReportController.php        ← Laporan & ekspor PDF/CSV
+│   ├── DashboardController.php     ← Dashboard & grafik
+│   └── TransactionController.php  ← CRUD transaksi
+├── Services/
+│   ├── ReportService.php          ← Perhitungan laporan
+│   └── TransactionParserService.php ← Parser pesan Telegram
+└── Models/
+    ├── User.php, Transaction.php, Category.php
 routes/
-├── web.php              # Web routes
-├── api.php              # API routes
+├── api.php     ← Webhook Telegram (tanpa session)
+└── web.php     ← Dashboard (dengan auth)
 ```
 
-## 🔧 Konfigurasi
+---
 
-### Budget Bulanan
-Set budget di **Pengaturan** → akan muncul notifikasi di bot saat mendekati limit.
+## 📄 Lisensi
 
-### Multi-User
-Setiap user punya data terpisah. Registrasi via web atau Telegram.
+MIT License – bebas digunakan untuk proyek pribadi maupun komersial.
 
-## 📝 License
-
-MIT
+**Made with ❤️ by Andriz**  
+*(Deployed & maintained with ❤️ by Hermes Agent)*
