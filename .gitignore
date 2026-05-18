@@ -1,0 +1,12 @@
+
+# Laravel specific
+/storage/framework/sessions/*
+/storage/framework/views/*
+!/storage/framework/sessions/.gitkeep
+!/storage/framework/views/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+# Database
+*.sqlite
+!/database/database.sqlite

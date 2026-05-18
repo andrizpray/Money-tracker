@@ -22,6 +22,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Transactions
     Route::resource('transactions', TransactionController::class);
+    Route::post('transactions/import', [TransactionController::class, 'import'])->name('transactions.import');
 
     // Categories
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');

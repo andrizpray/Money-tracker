@@ -2,6 +2,7 @@
 @section('title', 'Transaksi - Money Tracker')
 
 @section('content')
+<div x-data="{ showImportModal: false }"
 <div class="space-y-6">
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -9,10 +10,43 @@
             <h1 class="text-2xl font-bold">💰 Transaksi</h1>
             <p class="text-text2 text-sm">Kelola semua transaksi keuangan kamu</p>
         </div>
-        <a href="{{ route('transactions.create') }}" class="btn-primary px-5 py-2.5 rounded-xl text-white font-medium inline-flex items-center gap-2 w-fit">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Tambah Transaksi
-        </a>
+        <div class="flex gap-3">
+            <button @click="showImportModal = true" class="px-5 py-2.5 rounded-xl bg-success/15 text-success font-medium inline-flex items-center gap-2 hover:bg-success/25 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Import CSV
+            </button>
+            <a href="{{ route('transactions.create') }}" class="btn-primary px-5 py-2.5 rounded-xl text-white font-medium inline-flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Tambah Transaksi
+            </a>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div x-show="showImportModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showImportModal = false">
+        <div class="card rounded-2xl p-6 w-full max-w-md mx-4" @click.stop>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold">📥 Import Transaksi CSV</h3>
+                <button @click="showImportModal = false" class="p-2 rounded-lg hover:bg-surface2 text-text2">✕</button>
+            </div>
+            <p class="text-sm text-text2 mb-4">Format CSV: <code class="bg-surface2 px-2 py-1 rounded text-xs">Tanggal,Tipe,Jumlah,Deskripsi,Kategori</code></p>
+            <p class="text-xs text-text2 mb-4">Contoh: <code class="bg-surface2 px-1 py-0.5 rounded text-xs">2026-05-18,Pemasukan,500000,gaji,Gaji</code></p>
+            <form action="{{ route('transactions.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="border-2 border-dashed border-surface2 rounded-xl p-6 text-center mb-4 hover:border-accent transition-colors">
+                    <input type="file" name="csv_file" accept=".csv,.txt" required class="hidden" id="csvInput" @change="if($event.target.files[0]) { $event.target.closest('form').querySelector('.file-name').textContent = $event.target.files[0].name }">
+                    <label for="csvInput" class="cursor-pointer">
+                        <p class="text-4xl mb-2">📄</p>
+                        <p class="text-sm text-text2">Klik untuk pilih file</p>
+                        <p class="file-name text-xs text-accent mt-1"></p>
+                    </label>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" @click="showImportModal = false" class="flex-1 px-4 py-2 rounded-xl bg-surface2 text-text text-sm hover:bg-surface">Batal</button>
+                    <button type="submit" class="flex-1 px-4 py-2 rounded-xl bg-success text-white text-sm font-medium hover:bg-success/80 transition-colors">Import</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Filters -->
