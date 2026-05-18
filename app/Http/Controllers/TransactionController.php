@@ -38,7 +38,7 @@ class TransactionController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', "%{$search}%")
-                  ->where('amount', 'like', "%{$search}%");
+                  ->orWhere('amount', 'like', "%{$search}%");
             });
         }
 
@@ -48,13 +48,39 @@ class TransactionController extends Controller
 
         $categories = $user->categories;
 
-        return view('transactions.index', compact('transactions', 'categories'));
+        // Overall stats (before filter)
+        $baseQuery = $user->transactions();
+        if ($request->filled('type')) {
+            $baseQuery->where('type', $request->type);
+        }
+        if ($request->filled('category_id')) {
+            $baseQuery->where('category_id', $request->category_id);
+        }
+        if ($request->filled('date_from')) {
+            $baseQuery->where('transaction_date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $baseQuery->where('transaction_date', '<=', $request->date_to);
+        }
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $baseQuery->where(function ($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('amount', 'like', "%{$search}%");
+            });
+        }
+        $totalCount = (clone $baseQuery)->count();
+        $totalIncome = (float) (clone $baseQuery)->where('type', 'income')->sum('amount');
+        $totalExpense = (float) (clone $baseQuery)->where('type', 'expense')->sum('amount');
+
+        return view('transactions.index', compact('transactions', 'categories', 'totalIncome', 'totalExpense', 'totalCount'));
     }
 
     public function create()
     {
         $categories = Auth::user()->categories;
-        return view('transactions.create', compact('categories'));
+        $transaction = new Transaction();
+        return view('transactions.create', compact('categories', 'transaction'));
     }
 
     public function store(Request $request)

@@ -17,6 +17,9 @@ require __DIR__.'/auth.php';
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
+    // Logout via GET (for convenience)
+    Route::get('/logout', [App\Http\Controllers\Auth\AuthenticatedSessionController::class, 'destroy'])->name('logout.get');
+
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

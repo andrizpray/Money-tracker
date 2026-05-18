@@ -203,21 +203,22 @@
         </nav>
 
         <!-- User -->
-        <div class="px-4 py-4 border-t border-surface3/30">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-sm font-bold shadow-button">
+        <div class="px-3 py-2.5 border-t border-surface3/30">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white text-xs font-bold shadow-button flex-shrink-0">
                     {{ substr(Auth::user()->name, 0, 1) }}
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-medium text-text-primary truncate">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-text-secondary truncate">{{ Auth::user()->email }}</p>
                 </div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="text-text-tertiary hover:text-danger transition-colors" title="Logout">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                    </button>
-                </form>
+                <a href="{{ route('logout.get') }}"
+                   class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-text-tertiary hover:text-danger hover:bg-danger/10 transition-colors text-xs font-medium"
+                   title="Logout"
+                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    Keluar
+                </a>
+                <form id="logout-form" method="GET" action="{{ route('logout.get') }}" class="hidden"></form>
             </div>
         </div>
     </aside>
@@ -233,10 +234,6 @@
                 <div class="flex items-center gap-3">
                     <span class="text-sm text-text-secondary">{{ now()->format('l, d F Y') }}</span>
                 </div>
-                <a href="{{ route('transactions.create') }}" class="btn-primary px-4 py-2 rounded-xl text-white text-sm font-medium inline-flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span class="hidden sm:inline">Tambah</span>
-                </a>
             </div>
         </header>
 

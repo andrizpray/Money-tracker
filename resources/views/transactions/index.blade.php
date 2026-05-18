@@ -29,20 +29,20 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div class="rounded-xl bg-surface border border-surface3/30 p-4">
             <p class="text-xs text-text-tertiary mb-1">Total Transaksi</p>
-            <p class="text-lg font-bold text-text-primary">{{ $transactions->total() }}</p>
+            <p class="text-lg font-bold text-text-primary">{{ $totalCount }}</p>
         </div>
         <div class="rounded-xl bg-surface border border-surface3/30 p-4">
             <p class="text-xs text-text-tertiary mb-1">Pemasukan</p>
-            <p class="text-lg font-bold text-success">Rp{{ number_format($transactions->where('type', 'income')->sum('amount'), 0, ',', '.') }}</p>
+            <p class="text-lg font-bold text-success">Rp{{ number_format($totalIncome, 0, ',', '.') }}</p>
         </div>
         <div class="rounded-xl bg-surface border border-surface3/30 p-4">
             <p class="text-xs text-text-tertiary mb-1">Pengeluaran</p>
-            <p class="text-lg font-bold text-danger">Rp{{ number_format($transactions->where('type', 'expense')->sum('amount'), 0, ',', '.') }}</p>
+            <p class="text-lg font-bold text-danger">Rp{{ number_format($totalExpense, 0, ',', '.') }}</p>
         </div>
         <div class="rounded-xl bg-surface border border-surface3/30 p-4">
             <p class="text-xs text-text-tertiary mb-1">Net Saldo</p>
-            <p class="text-lg font-bold {{ ($transactions->where('type', 'income')->sum('amount') - $transactions->where('type', 'expense')->sum('amount')) >= 0 ? 'text-success' : 'text-danger' }}">
-                Rp{{ number_format($transactions->where('type', 'income')->sum('amount') - $transactions->where('type', 'expense')->sum('amount'), 0, ',', '.') }}
+            <p class="text-lg font-bold {{ ($totalIncome - $totalExpense) >= 0 ? 'text-success' : 'text-danger' }}">
+                Rp{{ number_format($totalIncome - $totalExpense, 0, ',', '.') }}
             </p>
         </div>
     </div>
@@ -104,24 +104,24 @@
             <table class="w-full">
                 <thead>
                     <tr class="border-b border-surface3/30">
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Transaksi</th>
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Kategori</th>
-                        <th class="text-left px-6 py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Tanggal</th>
-                        <th class="text-right px-6 py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Jumlah</th>
-                        <th class="text-center px-6 py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Aksi</th>
+                        <th class="text-left px-4 md:px-6 py-3 md:py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Transaksi</th>
+                        <th class="text-left px-4 md:px-6 py-3 md:py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider hidden sm:table-cell">Kategori</th>
+                        <th class="text-left px-4 md:px-6 py-3 md:py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Tanggal</th>
+                        <th class="text-right px-4 md:px-6 py-3 md:py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider">Jumlah</th>
+                        <th class="text-center px-4 md:px-6 py-3 md:py-4 text-xs font-semibold text-text-tertiary uppercase tracking-wider hidden md:table-cell">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($transactions as $t)
                     <tr class="hover:bg-surface2/20 transition-colors duration-150 group border-b border-surface3/10 last:border-0">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-11 h-11 rounded-xl flex items-center justify-center text-xl transition-transform group-hover:scale-105
+                        <td class="px-4 md:px-6 py-3 md:py-4">
+                            <div class="flex items-center gap-2 md:gap-3">
+                                <div class="w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center text-lg md:text-xl flex-shrink-0
                                     {{ $t->type === 'income' ? 'bg-success/10 ring-1 ring-success/20' : 'bg-danger/10 ring-1 ring-danger/20' }}">
                                     {{ $t->category?->icon ?? '📦' }}
                                 </div>
-                                <div>
-                                    <p class="font-medium text-text-primary text-sm">{{ $t->description ?: 'Tanpa deskripsi' }}</p>
+                                <div class="min-w-0">
+                                    <p class="font-medium text-text-primary text-sm truncate max-w-[120px] sm:max-w-none">{{ $t->description ?: 'Tanpa deskripsi' }}</p>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-xs mt-1
                                         {{ $t->type === 'income' ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }} font-medium">
                                         {{ $t->type === 'income' ? 'Pemasukan' : 'Pengeluaran' }}
@@ -129,34 +129,34 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs bg-surface2 text-text-secondary border border-surface3/30 font-medium">
+                        <td class="px-4 md:px-6 py-3 md:py-4 hidden sm:table-cell">
+                            <span class="inline-flex items-center px-2.5 md:px-3 py-1 rounded-lg text-xs bg-surface2 text-text-secondary border border-surface3/30 font-medium">
                                 {{ $t->category?->name ?? '-' }}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-4 md:px-6 py-3 md:py-4">
                             <div class="text-sm text-text-secondary">{{ $t->transaction_date->format('d M Y') }}</div>
-                            <div class="text-xs text-text-muted mt-0.5">{{ $t->transaction_date->format('H:i') }}</div>
+                            <div class="text-xs text-text-muted mt-0.5 hidden sm:block">{{ $t->transaction_date->format('H:i') }}</div>
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <p class="font-bold text-sm {{ $t->type === 'income' ? 'text-success' : 'text-danger' }}">
+                        <td class="px-4 md:px-6 py-3 md:py-4 text-right">
+                            <p class="font-bold text-sm {{ $t->type === 'income' ? 'text-success' : 'text-danger' }} whitespace-nowrap">
                                 {{ $t->type === 'income' ? '+' : '-' }}Rp{{ number_format($t->amount, 0, ',', '.') }}
                             </p>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <td class="px-4 md:px-6 py-3 md:py-4 hidden md:table-cell">
+                            <div class="flex items-center justify-center gap-0.5 md:gap-1">
                                 <a href="{{ route('transactions.edit', $t) }}"
-                                   class="p-2 rounded-lg hover:bg-primary-500/10 text-text-tertiary hover:text-primary-400 transition-colors"
+                                   class="p-1.5 md:p-2 rounded-lg hover:bg-primary-500/10 text-text-tertiary hover:text-primary-400 transition-colors"
                                    title="Edit">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 </a>
-                                <form action="{{ route('transactions.destroy', $t) }}" method="POST">
+                                <form action="{{ route('transactions.destroy', $t) }}" method="POST" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="submit"
-                                            class="p-2 rounded-lg hover:bg-danger/10 text-text-tertiary hover:text-danger transition-colors"
+                                            class="p-1.5 md:p-2 rounded-lg hover:bg-danger/10 text-text-tertiary hover:text-danger transition-colors"
                                             onclick="return confirm('Yakin ingin menghapus?')"
                                             title="Hapus">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        <svg class="w-3.5 h-3.5 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                     </button>
                                 </form>
                             </div>
