@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+    body {
+        @apply bg-bg text-text;
+    }
+}
+
+@layer components {
+    .card {
+        @apply rounded-2xl p-6;
+        background: linear-gradient(135deg, #1a1d2e 0%, #252840 100%);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    .card:hover {
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+    }
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    }
+}
